@@ -18,16 +18,50 @@ public class _GM : MonoBehaviour
     int LayerId = 0, ButState = 0;
     public Color[] UiColor;
     public int[] ItemId;
-    int SliderValue;
+    public int SliderValue;
     bool ReadyToRotate = false;
     public Slider Slider;
-    public Text SliderText, ItemText;
+    public Text ItemText;
+
     public GameObject Section_1, Section_2, Back;
     public ParticleSystem Boom;
+    public InputField InpF;
 
     private void Start()
     {
-        Slider.maxValue = 100;      
+        Slider.maxValue = 100;
+    }
+
+    public void SliderDrag()
+    {
+        SliderValue = (int)Slider.value;
+        InpF.text = SliderValue + "";
+    }
+
+    public void SliderTxtField()
+    {
+
+        SliderValue = int.Parse(InpF.text);
+        if (SliderValue > 100)
+        {
+            SliderValue = 100;
+        }
+        Slider.value = SliderValue;
+        InpF.text = SliderValue + "";
+    }
+
+    public void SliderTweet(int SliderTweetID)
+    {
+        if (SliderTweetID == 0 && SliderValue > 0)
+        {
+            SliderValue--;
+        }
+        if (SliderTweetID == 1 && SliderValue < 100)
+        {
+            SliderValue++;
+        }
+        Slider.value = SliderValue;
+        InpF.text = SliderValue + "";
     }
 
     public void EnableRot(bool RotPermission)
@@ -40,11 +74,11 @@ public class _GM : MonoBehaviour
         {
             ReadyToRotate = false;
         }
-    }   
+    }
 
     public void CenterBut(int ButID)
     {
-        if(LayerId == -1)
+        if (LayerId == -1)
         {
             LayerId = 0;
             ButState = 0;
@@ -60,9 +94,9 @@ public class _GM : MonoBehaviour
         }
 
         if (LayerId == 0)
-        {            
+        {
             LayerId = 1;
-            ButState = 4;            
+            ButState = 4;
             Layers[0].transform.localScale = RSc_1;
             Layers[1].transform.localScale = RSc_0;
             Layers[1].SetActive(true);
@@ -127,7 +161,7 @@ public class _GM : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         Section_2.SetActive(true);
-        ItemText.text = ItemId[0] + "-" + ItemId[1] + "-" + ItemId[2] + " X " + Slider.value;
+        ItemText.text = ItemId[0] + "-" + ItemId[1] + "-" + ItemId[2] + " X " + SliderValue;
         FinalImg.sprite = But_Imgs_0[ItemId[2] + ButState];
     }
 
@@ -138,10 +172,6 @@ public class _GM : MonoBehaviour
 
     void Update()
     {
-        SliderValue = (int)Slider.value;
-
-        SliderText.text = SliderValue.ToString();
-
         RotState = Layers[LayerId].transform.localEulerAngles.z;
 
         if (Input.GetMouseButton(0) && ReadyToRotate == true)
